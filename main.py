@@ -12,7 +12,7 @@ from langchain.vectorstores import FAISS
 from openapi_key import openapi_key
 os.environ['OPENAI_API_KEY'] = openapi_key
 
-st.title("News Research Tool 📈")
+st.title("UkRews: Enter the URLs and ask your Questions!")
 st.sidebar.title("News Article URLs")
 
 urls = []
@@ -24,7 +24,7 @@ process_url_clicked = st.sidebar.button("Process URLs")
 file_path = "faiss_store_openai.pkl"
 
 main_placeholder = st.empty()
-llm = OpenAI(temperature=0.9, max_tokens=500)
+llm = OpenAI(model="gpt-3.5-turbo-instruct", temperature=0.9, max_tokens=500)
 
 if process_url_clicked:
     # load data
@@ -39,12 +39,12 @@ if process_url_clicked:
     main_placeholder.text("Text Splitter...Started...✅✅✅")
     docs = text_splitter.split_documents(data)
     # create embeddings and save it to FAISS index
-    embeddings = [llm(doc) for doc in docs]
+    embeddings = OpenAIEmbeddings()
+    vectorstore_openai = FAISS.from_documents(docs, embeddings)
     main_placeholder.text("Embedding Vector Started Building...✅✅✅")
     time.sleep(2)
 
     # Save the FAISS index to a pickle file
-    vectorstore_openai = FAISS.from_embeddings(embeddings)
     with open(file_path, "wb") as f:
         pickle.dump(vectorstore_openai, f)
 
