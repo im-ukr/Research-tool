@@ -28,7 +28,7 @@ llm = OpenAI(model="gpt-3.5-turbo-instruct", temperature=0.9, max_tokens=500)
 
 if process_url_clicked:
     # load data
-    loader = UnstructuredURLLoader(urls=urls)
+    loader = UnstructuredURLLoader(urls=[url for url in urls if url])
     main_placeholder.text("Data Loading...Started...✅✅✅")
     data = loader.load()
     # split data
